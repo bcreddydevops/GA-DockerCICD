@@ -20,3 +20,14 @@ jobs:
         with:
           push: true
           tags: chinnareddaiah/wsapp:0.1
+
+      - name: Run Docker container on remote host
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_DOCKER_HOST }}
+          username: ${{ secrets.DEV_DOCKER_USER }}
+          key: ${{ secrets.DEV_DOCKER_KEY }}
+          script: |
+            docker rm -f wsapp 2> /dev/null || true
+            docker pull chinnareddaiah/wsapp:0.1
+            docker run -d --name wsapp -p 8080:8080 chinnareddaiah/wsapp:0.2
