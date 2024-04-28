@@ -14,3 +14,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push to Docker image to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: chinnareddaiah/wsapp:0.1
