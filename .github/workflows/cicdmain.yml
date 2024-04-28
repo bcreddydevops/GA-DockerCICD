@@ -30,4 +30,4 @@ jobs:
           script: |
             docker rm -f wsapp 2> /dev/null || true
             docker pull chinnareddaiah/wsapp:0.1
-            docker run -d --name wsapp -p 8080:8080 chinnareddaiah/wsapp:0.2
+            docker run -d --name wsapp -p 8080:8080 chinnareddaiah/wsapp:0.1
