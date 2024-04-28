@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to BCReddy DevOps Youtube channel -Please like </title>
+    <title>Welcome to BCReddy DevOps Youtube channel </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,7 +58,7 @@
         <h1>BCReddy DevOps - ChinnaReddaiah-Chinna</h1>
     </header>
     <h2>GitHub Actions Demo </h2>
-    <h2>Please like and share and subscribe my channel</h2>
+    <h2>Please like and share and subscribe my channel ..Thank you</h2>
 </body>
 
 </html>
