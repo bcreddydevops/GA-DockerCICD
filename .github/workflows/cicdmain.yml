@@ -15,11 +15,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Get latest commit hash
+        id: commit
+        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+
       - name: Push to Docker image to Docker Hub
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: chinnareddaiah/wsapp:0.1
+          tags: chinnareddaiah/wsapp:${{ steps.commit.outputs.hash }}
 
       - name: Run Docker container on remote host
         uses: appleboy/ssh-action@master
@@ -29,5 +33,5 @@ jobs:
           key: ${{ secrets.DEV_DOCKER_KEY }}
           script: |
             docker rm -f wsapp 2> /dev/null || true
-            docker pull chinnareddaiah/wsapp:0.1
-            docker run -d --name wsapp -p 8080:8080 chinnareddaiah/wsapp:0.1
+            docker pull chinnareddaiah/wsapp:${{ steps.commit.outputs.hash }}
+            docker run -d --name wsapp -p 8080:8080 chinnareddaiah/wsapp:${{ steps.commit.outputs.hash }}
