@@ -1,1 +1,1 @@
-sed "s/tagVersion/$1/g" deployment.yaml > deployment.yaml
+sed "s/tagVersion/$1/g" deployment.yaml 
