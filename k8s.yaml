@@ -4,12 +4,6 @@
   gather_facts: yes  # Gather facts about the target host
 
   tasks:
-    - name: Delete Deployment
-      command: kubectl delete -f /home/ubuntu/deployment.yaml
-
-    - name: Remove file
-      command: rm -rf /home/ubuntu/deployment.yaml
-      
     - name: Copy deployment.yaml to Kubernetes master
       copy:
         src: /var/lib/jenkins/workspace/my-app/deployment.yaml  # Assuming Jenkins workspace variable
