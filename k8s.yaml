@@ -12,4 +12,4 @@
       become_user: root  # Use a privileged user for copying if required
 
     - name: Apply Deployment
-      command: kubectl apply -f /home/ubuntu/deployment.yaml --server=https://192.168.49.2:8443
+      command: kubectl apply -f /home/ubuntu/deployment.yaml 
