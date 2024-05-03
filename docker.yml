@@ -1,5 +1,5 @@
 ---
-- hosts: local
+- hosts: dev
   become: True
   tasks:
     - name: Update apt package cache
