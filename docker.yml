@@ -6,4 +6,5 @@
       apt:
         update_cache: yes 
     - name: Run container
-      command: docker run -d --name my-app -p 8081:8080 chinnareddaiah/my-app:${DOCKER_TAG}
+      command: docker run -d --name my-app -p 8081:8080 chinnareddaiah/my-app:"{{ DOCKER_TAG }}"
+
