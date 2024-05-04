@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
+    environment {
+        DOCKER_TAG = getVersion()
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Checkout Source Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bcreddydevops/GA-DockerCICD.git'
+            }
+        }
+        stage('Maven Package') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                sh "docker build . -t chinnareddaiah/my-app:${DOCKER_TAG}"
+            }
+        }
+        stage('Docker Login and Docker Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                    sh "docker push chinnareddaiah/my-app:${DOCKER_TAG}"
+                }
+            }
+        }
+        stage('Update Deployment File') {
+            environment {
+                GIT_REPO_NAME = "GA-DockerCICD"
+                GIT_USER_NAME = "bcreddydevops"
+            }
+            steps {
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
+                    sh """
+                        git config user.email "bcreddydevops@gmail.com"
+                        git config user.name "bcreddydevops"
+                        BUILD_NUMBER=${BUILD_NUMBER}
+                        sed -i "s/chinnareddaiah\\/my-app:replaceImageTag/chinnareddaiah\\/my-app:\${BUILD_NUMBER}/g" k8s-manifests/deployment.yml
+                        git add k8s-manifests/deployment.yml
+                        git reset -- target/
+                        git add .
+                        git commit -m "Update deployment image to version \${BUILD_NUMBER}"
+                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                    """
+                }
+            }
+        }
+    }
+}
+
+def getVersion() {
+    def commitHash = sh label: '', returnStdout: true, script: 'git rev-parse --short HEAD'
+    return commitHash
+}
