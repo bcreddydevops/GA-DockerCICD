@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
+    environment {
+        DOCKER_TAG = getVersion()
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Checkout Source Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bcreddydevops/GA-DockerCICD.git'
+            }
+        }
+        stage('Maven Build and Package') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage("Sonarqube analysis"){
+            steps{
+                script{
+                withSonarQubeEnv(installationName: 'sonar-server', credentialsId: 'sonarqube-creds') {
+                      sh 'mvn sonar:sonar'
+                  }
+
+                   timeout(5) {
+                      def qg = waitForQualityGate()
+                      if (qg.status != 'OK') {
+                           error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                      }
+                    }
+                }
+            }
+        }
+        stage('Docker Image Build') {
+            steps {
+                sh "docker build . -t chinnareddaiah/my-app:${DOCKER_TAG}"
+            }
+        }
+        stage('Trivy Image Scan') {
+            steps {
+                sh "trivy image chinnareddaiah/my-app:${DOCKER_TAG} > scan.txt"
+                sh "trivy fs . > trivy_fs_report.txt"
+            }
+        }
+        stage ('OWASP Dependency-Check Vulnerabilities') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --format XML ', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }   
+        stage('Docker Login and Docker Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                    sh "docker push chinnareddaiah/my-app:${DOCKER_TAG}"
+                }
+            }
+        }
+    }
+}
+
+def getVersion() {
+    def commitHash = sh label: '', returnStdout: true, script: 'git rev-parse --short HEAD'
+    return commitHash
+}
