@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: chinnareddaiah/my-app:replaceImageTag
+        image: chinnareddaiah/my-app:17
         ports:
         - containerPort: 8080
         imagePullPolicy: Always
