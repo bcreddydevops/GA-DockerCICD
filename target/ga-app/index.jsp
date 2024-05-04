@@ -58,7 +58,7 @@
         <h1>BCReddy DevOps - ChinnaReddaiah-Chinna</h1>
     </header>
     <h2>GitHub Actions Demo-Self hosted Runner </h2>
-    <h2>Please like and share and subscribe my channel ..Thank you</h2>
+    <h2>Please like and share and subscribe my channel ..Thank you and keep smart work</h2>
 </body>
 
 </html>
