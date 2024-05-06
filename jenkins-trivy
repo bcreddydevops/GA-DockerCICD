@@ -69,10 +69,10 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]){
 				sh 'cd $WORKSPACE/'
-                sh 'curl -k --upload-file "${WORKSPACE}/dependency-check-report.xml" -u $USERNAME:$PASSWORD  -v http://44.202.114.144:8081/repository/bcreddy-nexus/${BUILD_ID}/'
-				sh 'curl -k --upload-file "${WORKSPACE}/trivy_fs_report.txt" -u $USERNAME:$PASSWORD  -v http://44.202.114.144:8081/repository/bcreddy-nexus/${BUILD_ID}/'
-				sh 'curl -k --upload-file "${WORKSPACE}/scan.txt" -u $USERNAME:$PASSWORD  -v http://44.202.114.144:8081/repository/bcreddy-nexus/${BUILD_ID}/'
-				sh "curl -k --upload-file ${WORKSPACE}/target/ga-app.war -u $USERNAME:$PASSWORD -v http://44.202.114.144:8081/repository/bcreddy-nexus/${BUILD_ID}/"
+                sh 'curl -k --upload-file "${WORKSPACE}/dependency-check-report.xml" -u $USERNAME:$PASSWORD  -v http://184.72.124.224:8081/repository/bcreddy-nexus/${BUILD_ID}/'
+				sh 'curl -k --upload-file "${WORKSPACE}/trivy_fs_report.txt" -u $USERNAME:$PASSWORD  -v http://184.72.124.224:8081/repository/bcreddy-nexus/${BUILD_ID}/'
+				sh 'curl -k --upload-file "${WORKSPACE}/scan.txt" -u $USERNAME:$PASSWORD  -v http://184.72.124.224:8081/repository/bcreddy-nexus/${BUILD_ID}/'
+				sh "curl -k --upload-file ${WORKSPACE}/target/ga-app.war -u $USERNAME:$PASSWORD -v http://184.72.124.224:8081/repository/bcreddy-nexus/${BUILD_ID}/"
 
               }
            }
